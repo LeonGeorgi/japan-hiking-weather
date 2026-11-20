@@ -56,23 +56,26 @@ npm run lint    # Code mit Oxlint prüfen
 npm run preview # Produktionsbuild lokal ansehen
 ```
 
-## Später mit GitHub Actions veröffentlichen
+## Mit GitHub Actions veröffentlichen
 
-Der Workflow `.github/workflows/weather-pages.yml` ist vorbereitet. Es wurde
-noch keine GitHub-Verbindung oder Veröffentlichung eingerichtet.
+Die Seite wird unter [hiking.leongeorgi.de](https://hiking.leongeorgi.de/)
+über GitHub Pages veröffentlicht. Im Repository
+[LeonGeorgi/japan-hiking-weather](https://github.com/LeonGeorgi/japan-hiking-weather)
+ist **GitHub Actions** als Pages-Quelle und `hiking.leongeorgi.de` als eigene
+Domain eingestellt. Cloudflare verwaltet dafür einen DNS-only-CNAME von
+`hiking.leongeorgi.de` auf `leongeorgi.github.io`.
 
-1. Das Repository nach GitHub hochladen, mit dem Workflow auf dem Standardbranch.
-2. Unter **Settings → Pages → Build and deployment → Source** die Option
-   **GitHub Actions** wählen.
-3. Unter **Actions → Update weather and publish → Run workflow** einmal starten.
+Der Workflow `.github/workflows/weather-pages.yml` holt die Wetterdaten, prüft und
+baut die Anwendung und veröffentlicht das Ergebnis. Eine Veröffentlichung lässt
+sich unter **Actions → Update weather and publish → Run workflow** manuell starten.
 
-Danach laufen Abruf, Tests, Build und Veröffentlichung auf GitHub Pages alle
+Automatisch laufen Abruf, Tests, Build und Veröffentlichung auf GitHub Pages alle
 sechs Stunden: 05:23, 11:23, 17:23 und 23:23 Uhr japanischer Zeit. GitHub kann
 geplante Läufe verzögert starten. Zusätzliche Veröffentlichungen lassen sich
 manuell auslösen. Ein Push allein startet keinen zusätzlichen Wetterabruf.
 
-Der Build übernimmt den Projektpfad aus der Pages-Konfiguration, sodass auch
-Adressen wie `https://<name>.github.io/hiking-weather/` funktionieren. Code und
+Der Build übernimmt den Basispfad aus der Pages-Konfiguration: bei der eigenen
+Domain `/`, bei einer GitHub-Projektadresse den jeweiligen Projektpfad. Code und
 Wetterdatei werden zusammen als Pages-Artefakt veröffentlicht. Die Wetterdatei
 wird nicht ins Repository zurückcommittet. Schlägt Abruf, Prüfung oder Build fehl,
 findet keine neue Veröffentlichung statt; der bisherige Stand bleibt erreichbar.
