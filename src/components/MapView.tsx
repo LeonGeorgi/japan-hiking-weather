@@ -3,13 +3,19 @@ import { MapContainer, Pane, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import transparentTileUrl from '../assets/transparent-tile.svg'
 import styles from './MapView.module.css'
+import type { WeatherSnapshot } from '../weather/schema'
 
 const MountainMarkers = lazy(() => import('./MountainMarkers'))
 const NationalParkBoundaries = lazy(() => import('./NationalParkBoundaries'))
 
 const gsiAttribution = '<a href="https://maps.gsi.go.jp/development/ichiran.html">GSI</a>'
 
-export default function MapView() {
+interface MapViewProps {
+  weather: WeatherSnapshot | null
+  selectedDate: string
+}
+
+export default function MapView({ weather, selectedDate }: MapViewProps) {
   return (
     <MapContainer
       className={styles.map}
@@ -39,7 +45,7 @@ export default function MapView() {
         <NationalParkBoundaries />
       </Suspense>
       <Suspense fallback={null}>
-        <MountainMarkers />
+        <MountainMarkers weather={weather} selectedDate={selectedDate} />
       </Suspense>
     </MapContainer>
   )

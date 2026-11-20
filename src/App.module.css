@@ -1,10 +1,12 @@
 .layout {
   display: grid;
-  grid-template-columns: clamp(4rem, 20vw, 16rem) minmax(0, 1fr);
+  grid-template-columns: clamp(11rem, 22vw, 16rem) minmax(0, 1fr);
   height: 100dvh;
 }
 
 .sidebar {
+  min-height: 0;
+  overflow-y: auto;
   border-right: 1px solid #e5e7eb;
 }
 
