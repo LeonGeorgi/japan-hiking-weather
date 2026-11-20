@@ -1,5 +1,27 @@
 # Kartendaten
 
+## Grundkarte (OpenStreetMap) und Relief (GSI)
+
+Die farbige OpenStreetMap-Grundkarte wird mit der GSI-Schummerung (`hillshademap`)
+kombiniert. Die Schummerung wird mit 45 % Deckkraft im Modus `soft-light` über
+die Grundkarte gelegt. Vorher normalisiert `brightness(0.7044)` den typischen
+Grauwert ebener GSI-Flächen (etwa 181/255) auf neutrales 50%-Grau. Dadurch
+werden ebene Flächen beim Mischen weitgehend unverändert gelassen, während
+Geländekanten weich aufgehellt oder abgedunkelt werden. Bergmarker und
+Nationalparkgrenzen liegen darüber. Die Aufbereitung erfolgt in dieser Anwendung
+und wird in der Quellenangabe auf der Karte gekennzeichnet.
+
+- [GSI-Kartenebenen und Nutzungsbedingungen](https://maps.gsi.go.jp/development/ichiran.html)
+- [OpenStreetMap-Kacheln und Nutzungsbedingungen](https://operations.osmfoundation.org/policies/tiles/)
+- Grundkarte: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`
+- Schummerung: `https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png`
+
+Die Karte beginnt bei Zoomstufe 2. Die Grundkarte liefert native Kacheln bis
+Zoom 19, die Schummerung bis Zoom 16. Darüber wird die Schummerung bis zur
+maximalen Karten-Zoomstufe 19 vergrößert. Sie ist auf Japan und seine
+vorgelagerten Inseln begrenzt. Fehlende Schummerungskacheln, etwa über dem Meer,
+werden transparent dargestellt, sodass die Grundkarte sichtbar bleibt.
+
 ## GSI-Bergdaten
 
 `gsi-mountains.json` enthält die unveränderte GeoJSON-Datei
