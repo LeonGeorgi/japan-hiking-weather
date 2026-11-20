@@ -74,3 +74,16 @@
   margin: 0;
   color: #92400e;
 }
+
+.method summary {
+  cursor: pointer;
+}
+
+.method p,
+.method ul {
+  margin: 0.625rem 0 0;
+}
+
+.method ul {
+  padding-left: 1.25rem;
+}

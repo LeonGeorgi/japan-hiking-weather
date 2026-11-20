@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { addDays, dateInJapan, isRecord, parseWeatherSnapshot, WEATHER_MODEL, WEATHER_TIMEZONE } from '../src/weather/schema.ts'
 import type { DailyWeather, WeatherSnapshot } from '../src/weather/schema.ts'
+import { hikingWindows, HOURLY_VARIABLES } from './hiking-window.ts'
 
 export interface SummitLocation {
   id: number
@@ -15,7 +16,8 @@ export interface SummitLocation {
 const ENDPOINT = 'https://api.open-meteo.com/v1/ecmwf'
 const FORECAST_DAYS = 7
 const BATCH_SIZE = 50
-const REQUEST_INTERVAL_MS = 7_500
+// 16 requested variables count as ~1.6 calls per location; stay below 600/min.
+const REQUEST_INTERVAL_MS = 12_000
 const VARIABLES = {
   code: ['weather_code', 'wmo code'],
   temperatureMin: ['temperature_2m_min', '°C'],
@@ -34,6 +36,7 @@ export function buildForecastUrl(summits: SummitLocation[], dates: string[]): UR
     elevation: summits.map((summit) => summit.elevation).join(','),
     models: WEATHER_MODEL,
     daily: Object.values(VARIABLES).map(([variable]) => variable).join(','),
+    hourly: Object.values(HOURLY_VARIABLES).map(([variable]) => variable).join(','),
     timezone: WEATHER_TIMEZONE,
     start_date: dates[0],
     end_date: dates.at(-1)!,
@@ -59,9 +62,11 @@ export function parseLocationForecast(value: unknown, summit: SummitLocation, da
       throw new Error(`Invalid ${variable} data or units for summit ${summit.id}`)
     }
   }
-  return dates.map((_, index) => Object.fromEntries(
-    Object.entries(VARIABLES).map(([field, [variable]]) => [field, (daily[variable] as unknown[])[index]]),
-  ) as unknown as DailyWeather)
+  const hiking = hikingWindows(value, dates)
+  return dates.map((_, index) => ({
+    ...Object.fromEntries(Object.entries(VARIABLES).map(([field, [variable]]) => [field, (daily[variable] as unknown[])[index]])),
+    hiking: hiking[index],
+  }) as unknown as DailyWeather)
 }
 
 interface FetchOptions {

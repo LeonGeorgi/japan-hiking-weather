@@ -1,8 +1,10 @@
 import { CircleMarker, LayerGroup, Popup, Tooltip } from 'react-leaflet'
 import { mountains } from '../data/mountains'
 import type { WeatherSnapshot } from '../weather/schema'
-import { formatWeatherValue, weatherCondition } from '../weather/presentation'
+import { formatWeatherValue, hikingCondition, weatherCondition } from '../weather/presentation'
+import { assessHikingWeather } from '../weather/scoring'
 import MountainWeather from './MountainWeather'
+import HikingConditions from './HikingConditions'
 
 const markerStyle = {
   color: '#fff',
@@ -22,7 +24,8 @@ export default function MountainMarkers({ weather, selectedDate }: MountainMarke
     <LayerGroup attribution='Bergdaten: <a href="https://web2.gsi.go.jp/kihonjohochousa/kihonjohochousa41139.html">GSI</a> | Wetter: <a href="https://open-meteo.com/">Open-Meteo</a> / <a href="https://www.ecmwf.int/en/forecasts/datasets/open-data">ECMWF</a>'>
       {mountains.map((mountain) => {
         const daily = weather?.forecasts[String(mountain.id)]?.[dayIndex]
-        const condition = weatherCondition(daily?.code)
+        const assessment = assessHikingWeather(daily?.hiking)
+        const condition = hikingCondition(assessment.score)
         return (
           <CircleMarker
             key={mountain.id}
@@ -32,14 +35,16 @@ export default function MountainMarkers({ weather, selectedDate }: MountainMarke
           >
             <Tooltip>
               <span lang="ja">{mountain.name}</span>
+              <br />
+              {assessment.score === null ? condition.label : `${assessment.score} / 100 · ${condition.label}`}
               {daily && (
                 <>
                   <br />
-                  {condition.label} · {formatWeatherValue(daily.temperatureMax, '°C')}
+                  {weatherCondition(daily.code).label} · Tagesmax. {formatWeatherValue(daily.temperatureMax, '°C')}
                 </>
               )}
             </Tooltip>
-            <Popup>
+            <Popup maxWidth={360} maxHeight={520}>
               <strong lang="ja">{mountain.name}</strong>
               <br />
               <span lang="ja">{mountain.reading}</span>
@@ -47,6 +52,7 @@ export default function MountainMarkers({ weather, selectedDate }: MountainMarke
               {mountain.elevation.toLocaleString('de-DE')} m
               <br />
               <span lang="ja">{mountain.prefecture}</span>
+              <HikingConditions weather={daily?.hiking} />
               <MountainWeather date={selectedDate} weather={daily} />
             </Popup>
           </CircleMarker>

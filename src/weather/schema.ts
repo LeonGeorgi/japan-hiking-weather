@@ -1,5 +1,20 @@
 export const WEATHER_MODEL = 'ecmwf_ifs'
 export const WEATHER_TIMEZONE = 'Asia/Tokyo'
+export const HIKING_WINDOW = { startHour: 8, endHour: 16 } as const
+
+export interface HikingWeather {
+  hours: number
+  temperatureMin: number | null
+  feelsLikeMin: number | null
+  feelsLikeMax: number | null
+  precipitation: number | null
+  precipitationMax: number | null
+  snowfall: number | null
+  windMax: number | null
+  gustMax: number | null
+  visibilityMin: number | null
+  codes: number[] | null
+}
 
 export interface DailyWeather {
   code: number | null
@@ -9,6 +24,8 @@ export interface DailyWeather {
   snowfall: number | null
   windMax: number | null
   gustMax: number | null
+  // Older snapshots still provide the daily forecast, without a hiking rating.
+  hiking?: HikingWeather | null
 }
 
 export interface WeatherSnapshot {
@@ -53,7 +70,19 @@ function isDailyWeather(value: unknown): value is DailyWeather {
   for (const field of ['precipitation', 'snowfall', 'windMax', 'gustMax']) {
     if (value[field] !== null && Number(value[field]) < 0) return false
   }
+  if (value.hiking !== undefined && value.hiking !== null && !isHikingWeather(value.hiking)) return false
   return value.temperatureMin === null || value.temperatureMax === null || Number(value.temperatureMin) <= Number(value.temperatureMax)
+}
+
+function isHikingWeather(value: unknown): value is HikingWeather {
+  if (!isRecord(value) || !Number.isInteger(value.hours) || Number(value.hours) < 1 || Number(value.hours) > HIKING_WINDOW.endHour - HIKING_WINDOW.startHour) return false
+  const fields = ['temperatureMin', 'feelsLikeMin', 'feelsLikeMax', 'precipitation', 'precipitationMax', 'snowfall', 'windMax', 'gustMax', 'visibilityMin']
+  if (!fields.every((field) => isNullableNumber(value[field]))) return false
+  for (const field of ['precipitation', 'precipitationMax', 'snowfall', 'windMax', 'gustMax', 'visibilityMin']) {
+    if (value[field] !== null && Number(value[field]) < 0) return false
+  }
+  if (value.feelsLikeMin !== null && value.feelsLikeMax !== null && Number(value.feelsLikeMin) > Number(value.feelsLikeMax)) return false
+  return value.codes === null || (Array.isArray(value.codes) && value.codes.length > 0 && value.codes.every((code) => Number.isInteger(code) && code >= 0 && code <= 99))
 }
 
 export function parseWeatherSnapshot(value: unknown): WeatherSnapshot {

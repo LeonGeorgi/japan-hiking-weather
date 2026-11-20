@@ -7,6 +7,7 @@ import { buildForecastUrl, fetchWeatherSnapshot, parseLocationForecast, writeWea
 import type { SummitLocation } from '../scripts/update-weather.ts'
 import { addDays, dateInJapan, parseWeatherSnapshot } from '../src/weather/schema.ts'
 import { defaultForecastDate, formatWeatherValue, isForecastStale, weatherCondition } from '../src/weather/presentation.ts'
+import { HOURLY_VARIABLES } from '../scripts/hiking-window.ts'
 
 const now = new Date('2026-11-19T15:05:00Z')
 const dates = Array.from({ length: 7 }, (_, index) => addDays('2026-11-20', index))
@@ -21,6 +22,19 @@ function apiForecast(elevation: number) {
     timezone: 'Asia/Tokyo',
     utc_offset_seconds: 32400,
     elevation,
+    hourly_units: Object.fromEntries(Object.values(HOURLY_VARIABLES).map(([variable, unit]) => [variable, unit])) as Record<string, string>,
+    hourly: {
+      time: dates.flatMap((date) => Array.from({ length: 24 }, (_, hour) => `${date}T${String(hour).padStart(2, '0')}:00`)),
+      temperature_2m: Array(168).fill(15),
+      apparent_temperature: Array(168).fill(15),
+      precipitation: Array(168).fill(0),
+      snowfall: Array(168).fill(0),
+      wind_speed_10m: Array(168).fill(10),
+      wind_gusts_10m: Array(168).fill(20),
+      visibility: Array(168).fill(10000),
+      weather_code: Array(168).fill(0),
+      is_day: Array.from({ length: 168 }, (_, index) => index % 24 >= 6 && index % 24 < 18 ? 1 : 0),
+    },
     daily_units: {
       weather_code: 'wmo code',
       temperature_2m_min: '°C',
@@ -68,6 +82,8 @@ test('requests pin IFS HRES, summit elevations, units and the Japanese calendar'
   assert.equal(url.searchParams.get('end_date'), '2026-11-26')
   assert.equal(url.searchParams.get('wind_speed_unit'), 'kmh')
   assert.equal(url.searchParams.has('apikey'), false)
+  assert.ok(url.searchParams.get('hourly')?.includes('visibility'))
+  assert.ok(url.searchParams.get('hourly')?.includes('apparent_temperature'))
 })
 
 test('batches preserve summit IDs and pace multi-location API calls', async () => {
@@ -78,12 +94,13 @@ test('batches preserve summit IDs and pace multi-location API calls', async () =
     now,
     batchSize: 2,
   })
-  assert.deepEqual(waits, [7500])
+  assert.deepEqual(waits, [12000])
   assert.deepEqual(snapshot.dates, dates)
   assert.deepEqual(Object.keys(snapshot.forecasts).sort(), ['2', '3', '396'])
   assert.equal(snapshot.forecasts['396'][0].temperatureMax, -4)
   assert.equal(snapshot.forecasts['396'][4].precipitation, 5)
   assert.equal(snapshot.forecasts['396'][0].precipitation, 0)
+  assert.equal(snapshot.forecasts['396'][0].hiking?.hours, 8)
 })
 
 test('incomplete batches, wrong days and wrong units are rejected', async () => {
@@ -97,6 +114,51 @@ test('incomplete batches, wrong days and wrong units are rejected', async () => 
   const wrongUnit = apiForecast(3776)
   wrongUnit.daily_units.wind_speed_10m_max = 'm/s'
   assert.throws(() => parseLocationForecast(wrongUnit, summits[0], dates), /units/)
+  const missingHour = apiForecast(3776)
+  missingHour.hourly.time.splice(8, 1)
+  assert.throws(() => parseLocationForecast(missingHour, summits[0], dates), /Hourly forecast date mismatch/)
+  const wrongHourlyUnit = apiForecast(3776)
+  wrongHourlyUnit.hourly_units.visibility = 'km'
+  assert.throws(() => parseLocationForecast(wrongHourlyUnit, summits[0], dates), /hourly visibility/)
+})
+
+test('hiking windows exclude night weather and align preceding-hour rainfall with daylight', () => {
+  const response = apiForecast(3776)
+  response.hourly.precipitation[2] = 50
+  response.hourly.precipitation[8] = 20 // 07:00–08:00, outside the window.
+  response.hourly.precipitation[9] = 1
+  response.hourly.precipitation[16] = 3
+  response.hourly.precipitation[17] = 40 // 16:00–17:00, outside the window.
+  response.hourly.apparent_temperature[2] = -30
+  response.hourly.wind_gusts_10m[2] = 100
+  response.hourly.visibility[2] = 0
+  response.hourly.apparent_temperature[8] = 12
+  const daily = parseLocationForecast(response, summits[0], dates)
+  assert.equal(daily[0].hiking?.precipitation, 4)
+  assert.equal(daily[0].hiking?.precipitationMax, 3)
+  assert.equal(daily[0].hiking?.feelsLikeMin, 12)
+  assert.equal(daily[0].hiking?.gustMax, 20)
+  assert.equal(daily[0].hiking?.visibilityMin, 10000)
+  assert.equal(daily[1].hiking?.precipitation, 0)
+
+  response.hourly.is_day[16] = 0
+  const shorterDay = parseLocationForecast(response, summits[0], dates)[0].hiking
+  assert.equal(shorterDay?.hours, 7)
+  assert.equal(shorterDay?.precipitation, 1)
+  response.hourly.is_day.fill(0, 0, 24)
+  assert.equal(parseLocationForecast(response, summits[0], dates)[0].hiking, null)
+})
+
+test('missing hourly inputs are preserved, and legacy daily files remain readable', async () => {
+  const response = apiForecast(3776)
+  const visibility: (number | null)[] = response.hourly.visibility
+  visibility[12] = null
+  assert.equal(parseLocationForecast(response, summits[0], dates)[0].hiking?.visibilityMin, null)
+  const snapshot = await fetchWeatherSnapshot(summits.slice(0, 1), { now, fetchFn: fetchFixture })
+  for (const day of snapshot.forecasts['396']) delete day.hiking
+  assert.doesNotThrow(() => parseWeatherSnapshot(snapshot))
+  snapshot.forecasts['396'][0].hiking = { ...parseLocationForecast(apiForecast(3776), summits[0], dates)[0].hiking!, windMax: -1 }
+  assert.throws(() => parseWeatherSnapshot(snapshot), /Invalid forecast/)
 })
 
 test('rate limits honor Retry-After; invalid requests are not retried', async () => {

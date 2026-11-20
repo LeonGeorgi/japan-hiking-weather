@@ -11,7 +11,24 @@ const conditions = {
   unavailable: { label: 'Keine Daten', color: '#c2410c' },
 }
 
-export const weatherLegend = Object.values(conditions)
+export const hikingLegend = [
+  { minimum: 80, range: '80–100', label: 'Sehr günstig', color: '#15803d' },
+  { minimum: 60, range: '60–79', label: 'Günstig', color: '#65a30d' },
+  { minimum: 40, range: '40–59', label: 'Gemischt', color: '#ca8a04' },
+  { minimum: 20, range: '20–39', label: 'Ungünstig', color: '#ea580c' },
+  { minimum: 0, range: '0–19', label: 'Sehr ungünstig', color: '#be123c' },
+]
+
+export function hikingCondition(score: number | null) {
+  return hikingLegend.find(({ minimum }) => score !== null && score >= minimum)
+    ?? { label: 'Nicht bewertbar', color: '#94a3b8' }
+}
+
+export function formatHikingFactor(score: number | null): string {
+  if (score === null) return '–'
+  if (score > 0 && score < 0.1) return '< 0,1'
+  return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 }).format(score)
+}
 
 export function weatherCondition(code: number | null | undefined) {
   if (code === 0 || code === 1) return conditions.clear
