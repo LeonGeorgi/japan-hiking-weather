@@ -1,10 +1,13 @@
+import MapView from './components/MapView'
 import styles from './App.module.css'
 
 export default function App() {
   return (
-    <main className={styles.page}>
-      <h1>Hiking Weather</h1>
-      <p>Wetter für deine nächste Wanderung.</p>
-    </main>
+    <div className={styles.layout}>
+      <aside className={styles.sidebar} aria-label="Seitenleiste" />
+      <main className={styles.mapArea} aria-label="Karte">
+        <MapView />
+      </main>
+    </div>
   )
 }

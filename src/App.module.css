@@ -1,5 +1,14 @@
-.page {
-  max-width: 64rem;
-  margin-inline: auto;
-  padding: 2rem 1rem;
+.layout {
+  display: grid;
+  grid-template-columns: clamp(4rem, 20vw, 16rem) minmax(0, 1fr);
+  height: 100dvh;
+}
+
+.sidebar {
+  border-right: 1px solid #e5e7eb;
+}
+
+.mapArea {
+  min-width: 0;
+  min-height: 0;
 }
