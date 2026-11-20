@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import styles from './MapView.module.css'
 
 const MountainMarkers = lazy(() => import('./MountainMarkers'))
+const NationalParkBoundaries = lazy(() => import('./NationalParkBoundaries'))
 
 export default function MapView() {
   return (
@@ -18,6 +19,9 @@ export default function MapView() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         maxZoom={19}
       />
+      <Suspense fallback={null}>
+        <NationalParkBoundaries />
+      </Suspense>
       <Suspense fallback={null}>
         <MountainMarkers />
       </Suspense>
