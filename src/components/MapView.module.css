@@ -1,12 +1,27 @@
 .map {
   width: 100%;
   height: 100%;
+  background: #f3f4f6;
 }
 
-.hillshade {
-  z-index: 250;
-  /* GSI's flat terrain (~181/255) becomes neutral 50% gray for soft-light. */
-  filter: brightness(0.7044);
-  mix-blend-mode: soft-light;
+.weatherSurface {
+  z-index: 300;
   pointer-events: none;
+}
+
+.weatherSurface image,
+.weatherSurface img {
+  image-rendering: pixelated;
+}
+
+.surfaceNotice {
+  position: absolute;
+  right: 1rem;
+  bottom: 2rem;
+  z-index: 700;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  color: #374151;
+  font-size: 0.875rem;
 }

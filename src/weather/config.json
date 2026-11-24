@@ -1,0 +1,19 @@
+{
+  "forecastDays": 7,
+  "timezone": "Asia/Tokyo",
+  "hikingWindow": { "startHour": 8, "endHour": 16 },
+  "terrainSurface": { "zoom": 9, "minZoom": 5, "resolutionMetres": 250 },
+  "nativeGridBounds": { "south": 24, "north": 46, "west": 122, "east": 147 },
+  "nativeMetrics": {
+    "version": 1,
+    "fields": [
+      "hours", "temperatureMin", "feelsLikeMin", "feelsLikeMax",
+      "precipitation", "precipitationMax", "snowfall", "windMax",
+      "gustMax", "visibilityMin", "hazards"
+    ],
+    "hazards": {
+      "thunderstorm": { "mask": 1, "weatherCode": 95 },
+      "snow": { "mask": 2, "weatherCode": 71 }
+    }
+  }
+}

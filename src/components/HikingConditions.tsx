@@ -1,6 +1,6 @@
 import type { HikingWeather } from '../weather/schema'
 import { assessHikingWeather, hikingFactors } from '../weather/scoring'
-import { formatHikingFactor, formatWeatherValue, hikingCondition } from '../weather/presentation'
+import { formatHikingFactor, formatHikingWindow, formatWeatherValue, hikingCondition } from '../weather/presentation'
 import styles from './HikingConditions.module.css'
 
 interface HikingConditionsProps {
@@ -34,7 +34,7 @@ export default function HikingConditions({ weather }: HikingConditionsProps) {
         <strong style={{ color: condition.color }}>{assessment.score === null ? '–' : assessment.score}<span> / 100</span></strong>
         <span>{condition.label}</span>
       </p>
-      <p className={styles.secondary}>08–16 Uhr JST · {weather ? `${weather.hours} Std. bei Tageslicht` : 'Stundenwerte fehlen'}</p>
+      <p className={styles.secondary}>{`${formatHikingWindow()} · `}{weather ? `${weather.hours} Std. bei Tageslicht` : 'Stundenwerte fehlen'}</p>
       {assessment.score === null ? (
         <p className={styles.note}>Für eine vollständige Bewertung fehlen Wetterdaten.</p>
       ) : assessment.score < 100 && (

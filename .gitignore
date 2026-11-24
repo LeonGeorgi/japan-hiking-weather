@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 /public/weather/
+/.cache/
+__pycache__/
+.playwright-cli/
+/output/playwright/
 *.local
 
 # Editor directories and files

@@ -1,0 +1,367 @@
+{
+  "measured_at": "2026-11-22T03:04:50.329266+00:00",
+  "model": "ecmwf_ifs",
+  "grid": "O1280 native ~9km",
+  "bbox": {
+    "south": 24,
+    "north": 46,
+    "west": 122,
+    "east": 147
+  },
+  "latitude_rows": 313,
+  "grid_points": 68433,
+  "block_bytes": 8192,
+  "period_start_jst": "2026-11-22T00:00:00+09:00",
+  "period_end_jst_exclusive": "2026-11-29T00:00:00+09:00",
+  "package_versions": {
+    "omfiles": "1.2.0",
+    "aiohttp": "3.14.5",
+    "numpy": "2.5.5"
+  },
+  "method": "Actual HTTP 206 response-body bytes with fresh cache for each file. Includes compressed-chunk and read-block overfetch. Excludes HTTP/TLS headers and tool installation. No API key or AWS account.",
+  "variables": [
+    {
+      "name": "temperature_2m",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/temperature_2m.om",
+      "unit": "°C",
+      "download_bytes": 9197832,
+      "range_requests": 1123,
+      "remote_file_bytes": 577648904,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": -29.299999237060547,
+      "max": 27.950000762939453,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 9971446,
+      "seconds": 25.95
+    },
+    {
+      "name": "dew_point_2m",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/dew_point_2m.om",
+      "unit": "°C",
+      "download_bytes": 10122304,
+      "range_requests": 1236,
+      "remote_file_bytes": 617100352,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": -32.20000076293945,
+      "max": 24.299999237060547,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 11100807,
+      "seconds": 31.0
+    },
+    {
+      "name": "wind_u_component_10m",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/wind_u_component_10m.om",
+      "unit": "m/s",
+      "download_bytes": 10453448,
+      "range_requests": 1277,
+      "remote_file_bytes": 683770312,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": -17.600000381469727,
+      "max": 21.75,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 11416746,
+      "seconds": 31.18
+    },
+    {
+      "name": "wind_v_component_10m",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/wind_v_component_10m.om",
+      "unit": "m/s",
+      "download_bytes": 10473656,
+      "range_requests": 1279,
+      "remote_file_bytes": 662466744,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": -18.899999618530273,
+      "max": 22.049999237060547,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 11976838,
+      "seconds": 29.86
+    },
+    {
+      "name": "wind_gusts_10m",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/wind_gusts_10m.om",
+      "unit": "m/s",
+      "download_bytes": 9421032,
+      "range_requests": 1151,
+      "remote_file_bytes": 580755688,
+      "shape": [
+        1,
+        6599680,
+        144
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        144
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.20000000298023224,
+      "max": 38.29999923706055,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 9613353,
+      "seconds": 29.71
+    },
+    {
+      "name": "precipitation",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/precipitation.om",
+      "unit": "mm",
+      "download_bytes": 6527688,
+      "range_requests": 797,
+      "remote_file_bytes": 343218888,
+      "shape": [
+        1,
+        6599680,
+        144
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        144
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.0,
+      "max": 180.3000030517578,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 2735936,
+      "seconds": 18.26
+    },
+    {
+      "name": "snowfall_water_equivalent",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/snowfall_water_equivalent.om",
+      "unit": "mm",
+      "download_bytes": 3295248,
+      "range_requests": 403,
+      "remote_file_bytes": 55814160,
+      "shape": [
+        1,
+        6599680,
+        144
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        144
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.0,
+      "max": 18.399999618530273,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 381901,
+      "seconds": 14.14
+    },
+    {
+      "name": "visibility",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/visibility.om",
+      "unit": "m",
+      "download_bytes": 14689200,
+      "range_requests": 1794,
+      "remote_file_bytes": 1171833776,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 40.0,
+      "max": 86260.0,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 11785991,
+      "seconds": 38.0
+    },
+    {
+      "name": "cloud_cover",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/cloud_cover.om",
+      "unit": "%",
+      "download_bytes": 10819280,
+      "range_requests": 1321,
+      "remote_file_bytes": 698775248,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.0,
+      "max": 100.0,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 7791608,
+      "seconds": 31.38
+    },
+    {
+      "name": "cape",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/cape.om",
+      "unit": "J/kg",
+      "download_bytes": 6629376,
+      "range_requests": 810,
+      "remote_file_bytes": 458401792,
+      "shape": [
+        1,
+        6599680,
+        145
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        145
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.0,
+      "max": 2020.0,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 3503664,
+      "seconds": 22.08
+    },
+    {
+      "name": "showers",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/showers.om",
+      "unit": "mm",
+      "download_bytes": 5767232,
+      "range_requests": 705,
+      "remote_file_bytes": 280223808,
+      "shape": [
+        1,
+        6599680,
+        144
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        144
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": 0.0,
+      "max": 92.5,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 1950749,
+      "seconds": 19.09
+    },
+    {
+      "name": "shortwave_radiation",
+      "url": "https://openmeteo.s3.amazonaws.com/data_run/ecmwf_ifs/2026/11/21/1200Z/shortwave_radiation.om",
+      "unit": "W/m²",
+      "download_bytes": 9596320,
+      "range_requests": 1172,
+      "remote_file_bytes": 675278240,
+      "shape": [
+        1,
+        6599680,
+        144
+      ],
+      "chunk_shape": [
+        1,
+        7,
+        144
+      ],
+      "selected_native_timesteps": 111,
+      "returned_float32_bytes": 30384252,
+      "finite_values": 7596063,
+      "min": -1.0,
+      "max": 751.0,
+      "cached_reread_download_bytes": 0,
+      "local_npz_bytes": 6735080,
+      "seconds": 27.86
+    }
+  ],
+  "run": "2026-11-21T12:00:00Z",
+  "static_elevation": {
+    "name": "HSURF",
+    "url": "https://openmeteo.s3.amazonaws.com/data/ecmwf_ifs/static/HSURF.om",
+    "unit": null,
+    "download_bytes": 582016,
+    "range_requests": 72,
+    "remote_file_bytes": 2482560,
+    "shape": [
+      1,
+      6599680
+    ],
+    "chunk_shape": [
+      1,
+      400
+    ],
+    "selected_native_timesteps": 1,
+    "returned_float32_bytes": 273732,
+    "finite_values": 68433,
+    "min": -999.0,
+    "max": 2284.0,
+    "cached_reread_download_bytes": 0,
+    "local_npz_bytes": 29715,
+    "seconds": 8.38
+  },
+  "forecast_download_bytes": 106992616,
+  "metadata_download_bytes": 4401,
+  "total_download_bytes": 107579033,
+  "range_requests": 13140,
+  "head_requests": 13,
+  "seconds": 327.38
+}

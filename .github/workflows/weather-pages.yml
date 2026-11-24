@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     permissions:
       contents: read
       pages: read
@@ -30,7 +30,24 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - name: Fetch ECMWF IFS forecasts
+      - name: Set up native weather importer
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: '0.13.6'
+          python-version: '3.13'
+          enable-cache: true
+          cache-dependency-glob: |
+            scripts/update-weather-native.py
+            tests/ecmwf_test.py
+      - run: npm run test:weather-import
+      - name: Cache static terrain
+        uses: actions/cache@v5
+        with:
+          path: |
+            .cache/terrain
+            .cache/ecmwf/static
+          key: terrain-v1-${{ runner.os }}-${{ hashFiles('scripts/terrain_surface.py', 'src/data/japan-land.json', 'src/weather/config.json') }}
+      - name: Fetch JMA MSM and ECMWF IFS forecasts
         run: npm run weather:update
       - name: Read Pages configuration
         id: pages

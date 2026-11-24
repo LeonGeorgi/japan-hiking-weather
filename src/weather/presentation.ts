@@ -1,5 +1,6 @@
 import { dateInJapan, WEATHER_TIMEZONE } from './schema.ts'
 import type { WeatherSnapshot } from './schema.ts'
+import { HIKING_WINDOW } from './config.ts'
 
 const conditions = {
   clear: { label: 'Klar / heiter', color: '#d49a00' },
@@ -28,6 +29,12 @@ export function formatHikingFactor(score: number | null): string {
   if (score === null) return '–'
   if (score > 0 && score < 0.1) return '< 0,1'
   return new Intl.NumberFormat('de-DE', { maximumFractionDigits: 1 }).format(score)
+}
+
+export function formatHikingWindow(): string {
+  const start = String(HIKING_WINDOW.startHour).padStart(2, '0')
+  const end = String(HIKING_WINDOW.endHour).padStart(2, '0')
+  return `${start}–${end} Uhr JST`
 }
 
 export function weatherCondition(code: number | null | undefined) {

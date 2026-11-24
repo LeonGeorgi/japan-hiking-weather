@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
-import { GeoJSON as LeafletGeoJSON, type LeafletEvent } from 'leaflet'
 import { GeoJSON, LayerGroup, Popup, Tooltip } from 'react-leaflet'
 import nationalParksUrl from '../data/biodic-national-parks.geojson?url'
 import styles from './NationalParkBoundaries.module.css'
@@ -13,15 +12,6 @@ const boundaryStyle = {
   weight: 2,
   opacity: 0.9,
   fill: false,
-}
-
-const boundaryEvents = {
-  add({ target }: LeafletEvent) {
-    // Use the shared canvas so both outlines and summit markers receive clicks.
-    if (target instanceof LeafletGeoJSON) {
-      target.bringToBack()
-    }
-  },
 }
 
 export default function NationalParkBoundaries() {
@@ -63,7 +53,6 @@ export default function NationalParkBoundaries() {
             key={park.properties.name}
             data={park}
             style={boundaryStyle}
-            eventHandlers={boundaryEvents}
           >
             <Tooltip sticky>{park.properties.name}</Tooltip>
             <Popup>

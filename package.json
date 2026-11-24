@@ -12,7 +12,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "weather:update": "node scripts/update-weather.ts",
-    "test": "node --test tests/*.test.ts"
+    "test": "node --test tests/*.test.ts",
+    "test:weather-import": "uv run --python 3.13 tests/ecmwf_test.py"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

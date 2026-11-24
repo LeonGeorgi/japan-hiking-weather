@@ -21,7 +21,8 @@ export default function MountainWeather({ date, weather }: MountainWeatherProps)
         <div><dt>Wind, max.</dt><dd>{formatWeatherValue(weather.windMax, 'km/h')}</dd></div>
         <div><dt>Böen, max.</dt><dd>{formatWeatherValue(weather.gustMax, 'km/h')}</dd></div>
       </dl>
-      <p className={styles.source}>ECMWF IFS · via Open-Meteo</p>
+      <p className={styles.source}>{weather.model === 'jma_msm' ? 'JMA MSM · 5 km · Böen, Sicht und Gewitterhinweise: IFS' : 'ECMWF IFS · 9 km'} · lokal aus Open-Meteo-Rohdaten berechnet, Temperatur auf Gipfelhöhe korrigiert.</p>
+      {weather.dailySupplemented && <p className={styles.source}>Tagesrandstunden außerhalb des MSM-Laufs stammen aus IFS. Das Wanderzeitfenster ist vollständig mit MSM abgedeckt.</p>}
     </section>
   )
 }

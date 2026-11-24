@@ -1,26 +1,63 @@
 # Kartendaten
 
-## Grundkarte (OpenStreetMap) und Relief (GSI)
+## Relief-Grundkarte (GSI)
 
-Die farbige OpenStreetMap-Grundkarte wird mit der GSI-Schummerung (`hillshademap`)
-kombiniert. Die Schummerung wird mit 45 % Deckkraft im Modus `soft-light` über
-die Grundkarte gelegt. Vorher normalisiert `brightness(0.7044)` den typischen
-Grauwert ebener GSI-Flächen (etwa 181/255) auf neutrales 50%-Grau. Dadurch
-werden ebene Flächen beim Mischen weitgehend unverändert gelassen, während
-Geländekanten weich aufgehellt oder abgedunkelt werden. Bergmarker und
-Nationalparkgrenzen liegen darüber. Die Aufbereitung erfolgt in dieser Anwendung
-und wird in der Quellenangabe auf der Karte gekennzeichnet.
+Die Grundkarte besteht ausschließlich aus der grauen GSI-Schummerung
+`hillshademap`. Sie wird mit voller Deckkraft und ohne Farbfilter oder
+Mischmodus angezeigt. Wetterfarben, Bergsymbole und Nationalparkgrenzen liegen
+darüber. Eine zusätzliche Straßenkarte wird nicht geladen.
 
 - [GSI-Kartenebenen und Nutzungsbedingungen](https://maps.gsi.go.jp/development/ichiran.html)
-- [OpenStreetMap-Kacheln und Nutzungsbedingungen](https://operations.osmfoundation.org/policies/tiles/)
-- Grundkarte: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`
-- Schummerung: `https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png`
+- Grundkarte: `https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png`
 
-Die Karte beginnt bei Zoomstufe 2. Die Grundkarte liefert native Kacheln bis
-Zoom 19, die Schummerung bis Zoom 16. Darüber wird die Schummerung bis zur
-maximalen Karten-Zoomstufe 19 vergrößert. Sie ist auf Japan und seine
-vorgelagerten Inseln begrenzt. Fehlende Schummerungskacheln, etwa über dem Meer,
-werden transparent dargestellt, sodass die Grundkarte sichtbar bleibt.
+Die Karte lässt sich nur innerhalb des Japan-Ausschnitts von 20 bis 46 °N und
+122 bis 154 °E verschieben, einschließlich der vorgelagerten Inseln. Die
+kleinste Zoomstufe wird an die Fenstergröße angepasst (mindestens Zoom 5),
+sodass der sichtbare Kartenausschnitt innerhalb dieses Bereichs bleibt.
+Die GSI-Schummerung liefert native Kacheln von Zoom 2 bis 16 und wird darüber
+bis zur maximalen Karten-Zoomstufe 19 vergrößert. Weltkopien sind deaktiviert.
+Fehlende Kacheln werden transparent vor dem neutralen Kartenhintergrund
+angezeigt. Die Quellenangabe verlinkt den GSI-Kartenkatalog.
+
+## Landmaske für die Wetterfläche
+
+`japan-land.json` enthält die aufbereiteten Japan-ADM0-Polygone von
+[geoBoundaries](https://www.geoboundaries.org/). Die Metadaten nennen als
+Originalquelle das japanische Ministry of Land, Infrastructure, Transport and
+Tourism (MLIT), National Land Numerical Information, Verwaltungsgrenzen N03.
+Dargestellter Datenstand: 2022; geoBoundaries-Build vom 12. Dezember 2023.
+Heruntergeladen am 22. November 2026.
+
+- [Metadaten/API](https://www.geoboundaries.org/api/current/gbOpen/JPN/ADM0/)
+- [Verwendetes Original-GeoJSON, Release 9469f09](https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/JPN/ADM0/geoBoundaries-JPN-ADM0.geojson)
+- [Lizenz: CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- [MLIT-Quelldatensatz](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v3_1.html)
+
+SHA-256 des Original-GeoJSON:
+`8da994e4c3301fa3f2e51dcbc23025d61225e6c15ed9c85e4a063ebc1cd11af8`.
+
+Die Aufbereitung repariert ungültige Geometrien, vereinfacht in Web Mercator
+mit 10 Metern Toleranz und erhält die Topologie. Anschließend werden die
+WGS84-Koordinaten auf sieben Nachkommastellen gerastert. Alle **4.979 Teilflächen**
+bleiben erhalten; es gibt keinen Größenfilter für kleine Inseln. Das Ergebnis
+enthält 153.815 Stützpunkte. Der Import prüft Land- und Inselorte sowie Meer,
+Buchten und Nachbarländer an 16 Kontrollpunkten.
+
+Die Maske wird als SVG-Clipping-Pfad in derselben Web-Mercator-Projektion wie
+die Wetterfläche gezeichnet. Küsten und Innenringe bleiben dadurch unabhängig
+von der Wetterbild-Auflösung. Außerhalb der Japan-Polygone ist die Wetterebene
+transparent; es wird keine Meeresfläche mit einer Hintergrundfarbe übermalt.
+Die Einfärbung reicht weiterhin nur so weit wie die vorhandenen Wetterdaten.
+Die lokalen Daten werden mit der Anwendung veröffentlicht; zur Laufzeit wird
+keine externe Grenzdaten-API abgefragt. Die Quellenangabe auf der Karte verlinkt
+geoBoundaries und kennzeichnet die Aufbereitung.
+
+Erneut erzeugen:
+
+```sh
+curl -fL https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/JPN/ADM0/geoBoundaries-JPN-ADM0.geojson -o /tmp/geoboundaries-japan.geojson
+uv run --python 3.13 scripts/import-japan-land.py /tmp/geoboundaries-japan.geojson
+```
 
 ## GSI-Bergdaten
 
